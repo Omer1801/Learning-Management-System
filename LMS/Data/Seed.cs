@@ -26,7 +26,7 @@ namespace LMS.Data
                             InstructorId = context.Users.Where(u => u.Role=="instructor").ToList().First().Id,
                             Description = "This is the description of the course",
                             Category = "Course Category",
-                            ImageURL = "google.com",
+                            ImageURL = "https://t4.ftcdn.net/jpg/03/08/69/75/360_F_308697506_9dsBYHXm9FwuW0qcEqimAEXUvzTwfzwe.jpg",
                             EnrollmentCount = 0,
                         },
                         new Course()
@@ -35,7 +35,7 @@ namespace LMS.Data
                             InstructorId = context.Users.Where(u => u.Role=="instructor").ToList().First().Id,
                             Description = "This is the description of the course",
                             Category = "Course Category",
-                            ImageURL = "google.com",
+                            ImageURL = "https://t4.ftcdn.net/jpg/03/08/69/75/360_F_308697506_9dsBYHXm9FwuW0qcEqimAEXUvzTwfzwe.jpg",
                             EnrollmentCount = 0,
                         }
                     });

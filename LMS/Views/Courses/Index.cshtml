@@ -1,0 +1,79 @@
+﻿@model IEnumerable<LMS.Models.Course>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Available Courses</h1>
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>
+        <a class="btn-success p-1" asp-action="Create">Create New</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Image
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                Instructor
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EnrollmentCount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+
+   
+       var user = await UserManager.FindByIdAsync(item.InstructorId);
+       var username = user != null ? user.UserName : "User not found";
+
+        <tr>
+            <td>
+                <img style="width:250px" src=@Html.DisplayFor(modelItem => item.ImageURL) />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @username
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.EnrollmentCount)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.CourseId">Details</a> 
+                @if(SignInManager.IsSignedIn(User)){ <span> | </span>
+                        <a asp-action="Edit" asp-route-id="@item.CourseId">Edit</a> <span> | </span>
+                <a asp-action="Delete" asp-route-id="@item.CourseId">Delete</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
