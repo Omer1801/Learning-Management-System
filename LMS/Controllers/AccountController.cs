@@ -40,7 +40,7 @@ namespace LMS.Controllers
                 if (passwordCheck)
                 {
                     //Password correct
-                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password,false/*TODO change*/,false);
+                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password,true,false);
                     if (result.Succeeded) 
                     {
                         return RedirectToAction("Index", "Home");

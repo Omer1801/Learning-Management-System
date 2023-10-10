@@ -37,6 +37,15 @@ namespace LMS.Data
                             Category = "Course Category",
                             ImageURL = "https://t4.ftcdn.net/jpg/03/08/69/75/360_F_308697506_9dsBYHXm9FwuW0qcEqimAEXUvzTwfzwe.jpg",
                             EnrollmentCount = 0,
+                        },
+                        new Course()
+                        {
+                            Title = "Course 3",
+                            InstructorId = context.Users.Where(u => u.Role=="instructor").ToList().First().Id,
+                            Description = "This is the description of the course",
+                            Category = "Course Category",
+                            ImageURL = "https://st2.depositphotos.com/1907633/8862/i/450/depositphotos_88627992-stock-photo-business-man-hand-working-on.jpg",
+                            EnrollmentCount = 0,
                         }
                     });
                     context.SaveChanges();
@@ -103,7 +112,7 @@ namespace LMS.Data
                         new Enrollment()
                         {
                             UserId = context.Users.Where(u => u.Role=="user").ToList().First().Id,
-                            CourseId = context.Courses.First().CourseId
+                            CourseId = context.Courses.OrderBy(j => j.CourseId).Skip(1).Take(1).FirstOrDefault().CourseId
 
                         }
                     });

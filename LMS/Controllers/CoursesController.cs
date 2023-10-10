@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMS.Data;
 using LMS.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CoursesController(ApplicationDbContext context)
+
+        public CoursesController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Courses
@@ -33,6 +37,30 @@ namespace LMS.Controllers
             return _context.Courses != null ?
                     View("Index",await _context.Courses.Where(j => j.Title.Contains(SearchPhrase)).ToListAsync()) :
                     Problem("Entity set 'ApplicationDbContext.Courses'  is null.");
+
+        }
+
+        // POST: Courses/ShowSearchResults
+        public async Task<IActionResult> MyCourses()
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.GetUserAsync(User);
+            var role = user.Role;
+            if(role.Contains("instructor")) { 
+                return _context.Courses != null ?
+                        View("Index", await _context.Courses.Where(j => j.InstructorId.Equals(userId)).ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Courses'  is null.");
+            }
+            else
+            {
+                
+                var enrolledCourses = _context.Enrollments
+                    .Where(enrollment => enrollment.UserId == user.Id)
+                    .Select(enrollment => enrollment.Course)
+                    .ToList();
+
+                return View("Index", enrolledCourses);
+            }
 
         }
 

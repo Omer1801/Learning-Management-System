@@ -6,10 +6,11 @@
 
 @{
     ViewData["Title"] = "Index";
+    var user = await UserManager.GetUserAsync(User);
 }
 
 <h1>Available Courses</h1>
-@if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User) && (user.Role.Equals("instructor") || user.Role.Equals("admin")))
 {
     <p>
         <a class="btn-success p-1" asp-action="Create">Create New</a>
@@ -43,8 +44,8 @@
 @foreach (var item in Model) {
 
    
-       var user = await UserManager.FindByIdAsync(item.InstructorId);
-       var username = user != null ? user.UserName : "User not found";
+       var userInstructor = await UserManager.FindByIdAsync(item.InstructorId);
+            var username = userInstructor != null ? userInstructor.UserName : "User not found";
 
         <tr>
             <td>
@@ -68,7 +69,7 @@
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.CourseId">Details</a> 
-                @if(SignInManager.IsSignedIn(User)){ <span> | </span>
+                @if(SignInManager.IsSignedIn(User) && ( user.Role.Equals("admin") || item.InstructorId == user.Id)){ <span> | </span>
                         <a asp-action="Edit" asp-route-id="@item.CourseId">Edit</a> <span> | </span>
                 <a asp-action="Delete" asp-route-id="@item.CourseId">Delete</a>
                 }

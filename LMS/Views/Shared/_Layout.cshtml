@@ -44,8 +44,13 @@
                 <div class="navbar-nav mx-auto py-0">
                     <a asp-controller="Home" asp-action="Index" class="nav-item nav-link active">Home</a>
 
-                    <a asp-controller="Courses" asp-action="Index" class="nav-item nav-link">Courses</a>
-                    <div class="nav-item dropdown">
+                    <a asp-controller="Courses" asp-action="Index" class="nav-item nav-link">All Courses</a>
+                        @if (SignInManager.IsSignedIn(User) && !currentUser.Role.Equals("admin"))
+                        {
+                    <a asp-controller="Courses" asp-action="MyCourses" class="nav-item nav-link">My Courses</a>
+                            
+                        }
+                        <div class="nav-item dropdown">
 
                         </div>
                     </div>
