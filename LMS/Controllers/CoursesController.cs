@@ -27,6 +27,15 @@ namespace LMS.Controllers
                           Problem("Entity set 'ApplicationDbContext.Courses'  is null.");
         }
 
+        // POST: Courses/ShowSearchResults
+        public async Task<IActionResult> ShowSearchResults(String SearchPhrase)
+        {
+            return _context.Courses != null ?
+                    View("Index",await _context.Courses.Where(j => j.Title.Contains(SearchPhrase)).ToListAsync()) :
+                    Problem("Entity set 'ApplicationDbContext.Courses'  is null.");
+
+        }
+
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {

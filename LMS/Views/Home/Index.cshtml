@@ -58,12 +58,14 @@
 
 
             <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
-                <div class="input-group">
-                    <input type="text" class="form-control border-light" style="padding: 15px 10px;" placeholder="Keyword">
-                    <div class="input-group-append">
-                        <button class="btn btn-light px-4 px-lg-5" style="margin-left: 25px;margin-top:9px;">Search</button>
+                <form asp-controller="Courses" asp-action="ShowSearchResults">
+                    <div class="form-group">
+                        <input type="text" name="SearchPhrase" class="form-control border-light" style="padding: 15px 10px;" placeholder="Course Name">
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-light px-4 px-lg-5" style="margin-left: 25px;margin-top:9px;" value="Search"></input>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
