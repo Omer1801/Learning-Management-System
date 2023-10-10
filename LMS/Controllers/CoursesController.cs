@@ -64,6 +64,46 @@ namespace LMS.Controllers
 
         }
 
+
+        public async Task<IActionResult> Enroll(int courseId)
+        {
+            // Get the current user
+            var user = await _userManager.GetUserAsync(User);
+
+            // Check if the user is already enrolled in the course
+            var isEnrolled = _context.Enrollments
+                .Any(e => e.UserId == user.Id && e.CourseId == courseId);
+
+            if (isEnrolled)
+            {
+                // User is already enrolled; handle this case (e.g., show an error message).
+                TempData["Error"] = "You are already enrolled in this course.";
+                return RedirectToAction("Index"); // Redirect to a suitable page
+            }
+
+            // If the user is not enrolled, create a new enrollment record
+            var enrollment = new Enrollment
+            {
+                UserId = user.Id,
+                CourseId = courseId,
+                EnrollmentDate = DateTime.Now // You can customize the enrollment date
+            };
+
+            // Increment the enrollment count of the course
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course != null)
+            {
+                course.EnrollmentCount++;
+            }
+
+            _context.Enrollments.Add(enrollment);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Enrollment successful!";
+            return RedirectToAction("Index"); // Redirect to a suitable page
+        }
+
+
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {

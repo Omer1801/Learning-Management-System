@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<User> UserManager
 @inject SignInManager<User> SignInManager
+@inject LMS.Data.ApplicationDbContext _context
 
 
 @{
@@ -16,6 +17,12 @@
         <a class="btn-success p-1" asp-action="Create">Create New</a>
     </p>
 }
+@if (TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"] </span>
+            </div>
+        }
 <table class="table">
     <thead>
         <tr>
@@ -44,8 +51,10 @@
 @foreach (var item in Model) {
 
    
-       var userInstructor = await UserManager.FindByIdAsync(item.InstructorId);
+            var userInstructor = await UserManager.FindByIdAsync(item.InstructorId);
             var username = userInstructor != null ? userInstructor.UserName : "User not found";
+            var isEnrolled = _context.Enrollments
+            .Any(e => e.CourseId == item.CourseId && e.UserId == user.Id);
 
         <tr>
             <td>
@@ -68,10 +77,21 @@
                 @Html.DisplayFor(modelItem => item.EnrollmentCount)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.CourseId">Details</a> 
+                    @if (SignInManager.IsSignedIn(User) && user.Role.Equals("user") && !isEnrolled )
+                    {
+                        <a class="btn-success p-1 rounded" asp-action="Enroll" asp-route-courseId="@item.CourseId">Enroll</a> 
+                        <span> | </span>
+                    }
+                    else @if (SignInManager.IsSignedIn(User) && user.Role.Equals("user") && isEnrolled )
+                    {
+                        <a class="btn-success p-1 rounded" asp-action="ViewCourse" asp-route-courseId="@item.CourseId">Learn</a> 
+                        <span> | </span>
+                    }
+                    
+                    <a class="btn-primary p-1 rounded" asp-action="Details" asp-route-id="@item.CourseId">Details</a>
                 @if(SignInManager.IsSignedIn(User) && ( user.Role.Equals("admin") || item.InstructorId == user.Id)){ <span> | </span>
-                        <a asp-action="Edit" asp-route-id="@item.CourseId">Edit</a> <span> | </span>
-                <a asp-action="Delete" asp-route-id="@item.CourseId">Delete</a>
+                        <a class="btn-warning p-1 rounded" asp-action="Edit" asp-route-id="@item.CourseId">Edit</a> <span> | </span>
+                <a class="btn-danger p-1 rounded" asp-action="Delete" asp-route-id="@item.CourseId">Delete</a>
                 }
             </td>
         </tr>
