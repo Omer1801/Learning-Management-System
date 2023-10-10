@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to the <b>Learning Management System</b></h1>
+    <h5>This is the landing page. Please login to continue your learning!</h5>
+</div>
